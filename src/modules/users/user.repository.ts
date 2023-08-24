@@ -2,7 +2,7 @@ import token from '../../utils/token.utils';
 import { prisma } from '../../config/database'
 import { User } from 'user';
 
-const service = {
+const respository = {
   async createUser(userPayload: User) {
     const { ...rest } = userPayload;
     const password = await token.hashPassword(userPayload.password);
@@ -13,4 +13,4 @@ const service = {
   },
 }
 
-export default service;
+export default respository;

@@ -9,6 +9,13 @@ const service = {
             where: { email: email },
         });
         return auth;
+    },
+    async getPaginatedUsers(offset: number, pageSize: number){
+        const users = await prisma.user.findMany({
+            skip: offset,
+            take: pageSize,
+        });
+        return users
     }
 }
 
