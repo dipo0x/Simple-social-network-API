@@ -1,12 +1,46 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import ApiError from '../../errors/ApiErrorHandler';
 import userService from '../users/user.service'
+import authRepository from '../auth/auth.repository'
 import redisService from '../../services/redis.service';
-import userRepository from '../users/user.repository'
 import token from '../../utils/token.utils';
 import jwtStrategies from "../../jwt/jwt.strategy";
 
 const auth = {
+    async registerUserHandler(
+        req: Request<
+        {},
+        {},
+        {
+          email: string
+          username: string
+          password: string
+        }
+      >,
+      res: Response
+    ) 
+    {
+      try {
+        let { email, username, password } = req.body;
+
+        if (!username?.trim() || !email?.trim() || !password?.trim()) {
+          return ApiError(400, 'All fields are required', res);
+        }
+        const userExists = await userService.findUserByEmail(email);
+        if (userExists) {
+          return ApiError(400, 'User already exists', res);
+        }
+        const user = await authRepository.createUser(req.body);
+        return res.status(201).send({
+          status: 201,
+          success: true,
+          message: user,
+        });
+      } catch (err) {
+        console.log(err)
+        return ApiError(500, 'Something went wrong', res);
+      }
+   },
     async loginUserHandler(
         req: Request<
         {},

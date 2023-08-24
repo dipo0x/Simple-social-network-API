@@ -8,6 +8,7 @@ import { connectToDatabase } from './config/database';
 import logger from './log/logger';
 import userRoute from './modules/users/user.route'
 import authRoute from './modules/auth/auth.route'
+import postRoute from './modules/post/post.route'
 
 class App {
     public express: Application;
@@ -29,7 +30,8 @@ class App {
         this.express.disable("x-powered-by");
         this.express.use('/api/v1', 
             userRoute,
-            authRoute
+            authRoute,
+            postRoute
         )
     }
     private initializeErrorHandling(): void {
