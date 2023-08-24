@@ -5,16 +5,9 @@ import service from './user.service'
 const auth = {
   async getUsersHandler(
       req: Request<
-      {
-        page: number
-        pageSize: number
-      },
       {},
-      {
-        email: string
-        username: string
-        password: string
-      }
+      {},
+      {}
     >,
     res: Response
     ) 

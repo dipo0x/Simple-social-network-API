@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import ApiError from '../../errors/ApiErrorHandler';
-// import repository from "./post.repository";
+import service from "./post.service";
 import repository from "./post.repository";
+import { AuthUser } from "user";
 
 const auth = {
     async createPostHandler(
@@ -14,28 +15,55 @@ const auth = {
         }
     >,
     res: Response
-    ) 
-    {
-    try {
-        let { title, body } = req.body;
+    )  {
+        try {
+            let { title, body } = req.body;
 
-        if (!title?.trim() || !body?.trim()) {
-        return ApiError(400, 'All fields are required', res);
+            if (!title?.trim() || !body?.trim()) {
+            return ApiError(400, 'All fields are required', res);
+            }
+            const postExists = await repository.findPostByContent( title, body, req );
+            if (postExists) {
+                return ApiError(400, `Post with this ${postExists} already exist`, res);
+            }
+            const post = await repository.createPost(req.body, req);
+            return res.status(201).send({
+                status: 201,
+                success: true,
+                message: post,
+            });
+        } 
+        catch (err) {
+            console.log(err)
+            return ApiError(500, 'Something went wrong', res);
         }
-        const postExists = await repository.findPostByContent( title, body, req );
-        if (postExists) {
-            return ApiError(400, `Post with this ${postExists} already exist`, res);
-        }
-        const post = await repository.createPost(req.body, req);
-        return res.status(201).send({
-            status: 201,
+    },
+    async getUserPosts(
+        req: Request<
+        {},
+        {},
+        {}
+      >,
+      res: Response
+      ) 
+      {
+        try {
+          let { page, pageSize }  = req.query;
+  
+          let pageInt: number = parseInt(page as string) || 1
+          let pageSizeInt: number = parseInt(pageSize as string) || 5
+          const offset = (pageInt - 1) * pageSizeInt;
+          const posts = await service.getPaginatedUsersPosts(offset, pageSizeInt, req);
+  
+          return res.status(200).send({
+            status: 200,
             success: true,
-            message: post,
-        });
-    } catch (err) {
-        console.log(err)
-        return ApiError(500, 'Something went wrong', res);
-    }
+            message: posts,
+          });
+        } catch (err) {
+          console.log(err)
+          return ApiError(500, 'Something went wrong', res);
+      }
     }
 
 }
