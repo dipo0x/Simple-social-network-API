@@ -15,6 +15,7 @@ const service = {
             skip: offset,
             take: pageSize,
         });
+
         return users
     }
 }
