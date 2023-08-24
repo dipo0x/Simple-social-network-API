@@ -4,6 +4,7 @@ import userService from '../users/user.service'
 import redisService from '../../services/redis.service';
 import userRepository from '../users/user.repository'
 import token from '../../utils/token.utils';
+import jwtStrategies from "../../jwt/jwt.strategy";
 
 const auth = {
     async loginUserHandler(
@@ -31,14 +32,14 @@ const auth = {
         }
         const isLocked = await redisService.getValue(auth.id)
         if(isLocked == 1){
-            return ApiError(409, 'Your account is temporarily locked. Please contact support', res);
+            return ApiError(401, 'Your account is temporarily locked. Please contact support', res);
         }
         const isCorrectPassword = await token.comparePasswords(password, auth.password)
         if(!isCorrectPassword){
             const data = await redisService.createTempLock(auth.id)
             return ApiError(400, `Incorrect password. You have ${data} chance(s) left.`, res);
         }
-        const access_token = await token.signToken(auth);
+        const access_token = await jwtStrategies.signToken(auth);
         const user = await userService.findUserByEmail(email)
         const message = {
             user,
