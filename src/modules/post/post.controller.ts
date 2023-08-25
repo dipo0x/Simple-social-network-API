@@ -3,6 +3,7 @@ import ApiError from '../../errors/ApiErrorHandler';
 import service from "./post.service";
 import repository from "./post.repository";
 import { AuthUser } from "user";
+import { User } from "@prisma/client";
 
 const auth = {
     async createPostHandler(
@@ -64,7 +65,41 @@ const auth = {
           console.log(err)
           return ApiError(500, 'Something went wrong', res);
       }
-    }
+    },
+    async addCommentHandler(
+        req: Request<
+        {  
+            postId: string
+        },
+        {},
+        {
+            body: string
+        }
+    >,
+    res: Response
+    )  {
+        try {
+            const { postId } = req.params;
+            const { body } = req.body;
 
+            if (!body?.trim()) {
+            return ApiError(400, 'Comment is required', res);
+            }
+            const comment = await repository.findCommentByPostId( postId, body, req );
+            if (comment) {
+                return ApiError(400, `This is a duplicate comment`, res);
+            }
+            const post = await repository.createComment(postId, body, req.user as User);
+            return res.status(201).send({
+                status: 201,
+                success: true,
+                message: post,
+            });
+        } 
+        catch (err) {
+            console.log(err)
+            return ApiError(500, 'Something went wrong', res);
+        }
+    }
 }
 export default auth;

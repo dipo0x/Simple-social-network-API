@@ -29,6 +29,27 @@ const auth = {
         console.log(err)
         return ApiError(500, 'Something went wrong', res);
     }
+  },
+  async getTopUser(
+    req: Request<
+    {},
+    {},
+    {}
+  >,
+  res: Response
+  ) 
+  {
+    try {
+      const topUsers = await service.getTopUsersWithPostsAndLatestComment();
+      return res.status(200).send({
+        status: 200,
+        success: true,
+        message: topUsers,
+      });
+    } catch (err) {
+      console.log(err)
+      return ApiError(500, 'Something went wrong', res);
+    }
   }
 }
 

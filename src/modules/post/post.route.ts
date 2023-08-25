@@ -4,9 +4,14 @@ import authMiddleware from "../../middlewares/auth.middlware";
 
 const router: Router = Router();
 
-router.post("/post/create-post/", 
+router.post("/posts/create-post/", 
     authMiddleware.authenticateRequest, 
     postController.createPostHandler
+);
+
+router.post("/posts/:postId/comments/", 
+    authMiddleware.authenticateRequest, 
+    postController.addCommentHandler
 );
 
 export default router;

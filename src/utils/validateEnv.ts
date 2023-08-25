@@ -1,12 +1,15 @@
-import { cleanEnv, str, port  } from "envalid";
+import { cleanEnv, str, port, url, num  } from "envalid";
 
 function validateEnv(): void{
     cleanEnv(process.env, {
+        DATABASE_URL: str(),
+        PORT: port({ default: 3000 }),
         NODE_ENV: str({ 
             choices: ["development", "production"]
         }),
-        DATABASE_URL: str(),
-        PORT: port({ default: 3000 })
+        AccessTokenKey: str(),
+        REDIS_HOST: str(),
+        accessTokenExpiresIn: num()
     })
 }
 

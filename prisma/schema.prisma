@@ -18,6 +18,8 @@ model User {
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  posts Post[]
+  comments Comment[]
 }
 
 model Post {
@@ -27,4 +29,17 @@ model Post {
   authorId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  author User @relation(fields: [authorId], references: [id])
+  comments Comment[]
+}
+
+model Comment {
+  id String @id @default(uuid())
+  postId String
+  authorId String
+  body String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  post Post @relation(fields: [postId], references: [id])
+  author User @relation(fields: [authorId], references: [id])
 }

@@ -17,7 +17,29 @@ const service = {
         });
 
         return users
-    }
+    },
+    async getTopUsersWithPostsAndLatestComment(){
+      const topUsers = await prisma.user.findMany({
+        take: 3,
+        orderBy: {
+            posts: {
+                _count: 'desc'
+            }
+        },
+        select: {
+            id: true,
+            username: true,
+            email: true,
+            comments: {
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                take: 1
+            }
+        }
+    });
+    return topUsers
+  }
 }
 
 export default service;

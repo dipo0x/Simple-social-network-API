@@ -2,6 +2,7 @@ import { Post } from 'post';
 import { prisma } from '../../config/database'
 import { Request } from 'express';
 import { AuthUser } from 'user';
+import { User } from '@prisma/client';
 
 const repository = {
     async findPostByContent(title: string, body: string, req: Request) {
@@ -28,12 +29,42 @@ const repository = {
     },
     async createPost(postPayload: Post, req: Request) {
         const { ...rest } = postPayload;
+        const authorId = (req.user as AuthUser).id
         const post = await prisma.post.create({
-          data: { ...rest, authorId: (req.user as AuthUser).id},
+          data: { 
+            ...rest,
+            author: {
+                connect: { id: authorId }
+              }
+            },
         });
     
         return post;
-      },
+    },
+    async findCommentByPostId(postId: string, body: string, req: Request) {
+        const comment = await prisma.comment.findFirst({ 
+            where: { postId, body, authorId: (req.user as AuthUser).id },
+        });
+        if(!comment){
+            return null
+        } 
+        return comment
+    },
+    async createComment(postId: string, body: string, user: User) {
+        const authorId = user.id
+        const comment = await prisma.comment.create({ 
+            data: { 
+                body,
+                post: {
+                    connect: { id: postId }
+                  },
+                  author: {
+                    connect: { id: authorId }
+                }
+            },
+        });
+        return comment
+    }
 };
 
 export default repository

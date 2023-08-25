@@ -10,5 +10,9 @@ router.get("/users/:id/posts/",
     authMiddleware.authenticateRequest, 
     postController.getUserPosts
 );
+router.get("/users/top/3/posts/", 
+    authMiddleware.authenticateRequest, 
+    userController.getTopUser
+);
 
 export default router;
