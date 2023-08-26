@@ -65,7 +65,7 @@ The server will run on http://localhost:3000 by default
 
 ## Available Endpoints
 
-Base URL[dev]: http://0.0.0.0:1500/api/v1
+Base URL[dev]: http://0.0.0.0:3000/api/v1
 
 ```
 ### Errors
