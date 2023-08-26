@@ -1,10 +1,11 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import App from '../app';
-import { before, describe, it } from 'node:test';
+import { describe, it } from 'node:test';
 import assert from 'assert';
 import request from 'supertest'; 
 import userRepo from '../modules/users/user.repository';
+import randomCharacters from '../helpers/characters'
 
 const appInstance = new App(3000);
 const app = appInstance.express;
@@ -12,9 +13,9 @@ const app = appInstance.express;
 chai.should();
 chai.use(chaiHttp);
 
-export const email = 'johndoe@gmail.com';
+export const email = `${randomCharacters(5)}@gmail.com`;
 export const password = 'test1234';
-export const username = 'JohnDoe';
+export const username = randomCharacters(5);
 
 describe(`${process.env.SERVER_NAME} - Auth Integration tests`, async () => {
 
@@ -26,7 +27,6 @@ describe(`${process.env.SERVER_NAME} - Auth Integration tests`, async () => {
         email,
         password,
       };
-      await userRepo.deleteUser(email);
       const res = await request(app)
         .post('/api/v1/auth/add-user')
         .send(user);
