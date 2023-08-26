@@ -7,9 +7,9 @@ function validateEnv(): void{
         NODE_ENV: str({ 
             choices: ["development", "production"]
         }),
-        AccessTokenKey: str(),
+        ACCESSTOKENKEY: str(),
         REDIS_HOST: str(),
-        accessTokenExpiresIn: num()
+        ACCESSTOKENEXPIRESIN: num()
     })
 }
 

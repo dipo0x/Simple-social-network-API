@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import ApiError from '../../errors/ApiErrorHandler';
 import service from "./post.service";
 import repository from "./post.repository";
-import { AuthUser } from "user";
 import { User } from "@prisma/client";
+import { RequestWithUser } from "@types";
 
 const auth = {
     async createPostHandler(
@@ -54,7 +54,7 @@ const auth = {
           let pageInt: number = parseInt(page as string) || 1
           let pageSizeInt: number = parseInt(pageSize as string) || 5
           const offset = (pageInt - 1) * pageSizeInt;
-          const posts = await service.getPaginatedUsersPosts(offset, pageSizeInt, req);
+          const posts = await service.getPaginatedUsersPosts(offset, pageSizeInt, req as unknown as RequestWithUser);
   
           return res.status(200).send({
             status: 200,
@@ -89,7 +89,7 @@ const auth = {
             if (comment) {
                 return ApiError(400, `This is a duplicate comment`, res);
             }
-            const post = await repository.createComment(postId, body, req.user as User);
+            const post = await repository.createComment(postId, body, req);
             return res.status(201).send({
                 status: 201,
                 success: true,

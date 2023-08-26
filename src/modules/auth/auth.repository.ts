@@ -1,6 +1,6 @@
 import { prisma } from '../../config/database'
 import token from '../../utils/token.utils';
-import { User } from 'user';
+import { User } from '@types';
 
 const repository = {
     async createUser(userPayload: User) {

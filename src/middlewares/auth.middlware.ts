@@ -20,7 +20,7 @@ const authMiddleware = {
         });
       }
 
-      const decoded: JwtPayload = jwt.verify(token as any, `${process.env.AccessTokenKey}`) as JwtPayload;
+      const decoded: JwtPayload = jwt.verify(token as any, `${process.env.ACCESSTOKENKEY}`) as JwtPayload;
       const user = await authUserRepository.findUserById(decoded.id);
       if (!user) {
         return ApiError(400, 'Login to proceed', res)

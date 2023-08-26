@@ -1,7 +1,7 @@
-import { Post } from 'post';
+import { Post } from '@types';
 import { prisma } from '../../config/database'
 import { Request } from 'express';
-import { AuthUser } from 'user';
+import { AuthUser } from '@types';
 import { User } from '@prisma/client';
 
 const repository = {
@@ -50,8 +50,8 @@ const repository = {
         } 
         return comment
     },
-    async createComment(postId: string, body: string, user: User) {
-        const authorId = user.id
+    async createComment(postId: string, body: string, req: Request) {
+        const authorId = (req.user as AuthUser).id 
         const comment = await prisma.comment.create({ 
             data: { 
                 body,

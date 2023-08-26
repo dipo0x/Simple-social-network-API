@@ -7,3 +7,5 @@ validateEnv();
 const app = new App(Number(process.env.PORT));
 
 app.listen();
+
+export default app
