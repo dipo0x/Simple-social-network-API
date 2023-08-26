@@ -2,7 +2,6 @@ import express, { Application, Request, Response, NextFunction  } from 'express'
 import compression from 'compression' 
 import cors from 'cors' 
 import morgan from 'morgan';
-import errorMiddleware from './middlewares/error.middleware'
 import helmet from 'helmet'
 import { connectToDatabase } from './config/database';
 import logger from './log/logger';
