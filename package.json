@@ -1,7 +1,7 @@
 {
-  "name": "risevest-oladipo-network",
+  "name": "oladipo-network",
   "version": "1.0.0",
-  "description": "Social network for risevest built by Oladipo",
+  "description": "Social network built by Oladipo",
   "main": "index.js",
   "author": "Oladipo Adesiyan",
   "license": "MIT",
